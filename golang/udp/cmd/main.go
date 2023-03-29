@@ -25,6 +25,7 @@ func generateSyslogMessage(servity int, msg string) string {
 	return message
 }
 
+// sendUDPMessage sends a raw text message to a url
 func sendUDPMessage(url, message string) error {
 	// create udp connection
 	conn, err := net.Dial("udp", url)
@@ -41,6 +42,7 @@ func sendUDPMessage(url, message string) error {
 	return nil
 }
 
+// sendSyslog sends a syslog message to a url
 func sendSyslog(url string, servity int, message string) error {
 	// create a syslog message
 	syslogMessage := generateSyslogMessage(servity, message)
@@ -56,16 +58,16 @@ func main() {
 	var typ string
 	flag.StringVar(&typ, "t", "syslog", "message type (syslog, plain)")
 	flag.Parse()
-
+	args := flag.Args()
 	// check args
-	if len(os.Args) != 3 {
+	if len(args) < 2 {
 		// print usage
 		fmt.Println("Usage: udpctl host:port message")
 		os.Exit(1)
 	}
-	logrus.Debug("args: ", os.Args)
-	url := os.Args[1]
-	message := os.Args[2]
+	logrus.Info("args: ", args, " len: ", len(args))
+	url := args[0]
+	message := args[1]
 	// send upd message to  url
 
 	switch typ {
